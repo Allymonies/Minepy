@@ -33,22 +33,22 @@ import time
 #https://github.com/dividuum/fastmc/blob/master/fastmc/proto.py#L110
 def varint(value):
 	result = bytearray()
-    if value <= 127: # fast path
-        result += bytearray(value)
-    else:
-        shifted_value = True # dummy initialized
-        while shifted_value:
-            shifted_value = value >> 7
-            result += bytearray((value & 0x7f) | (0x80 if shifted_value else 0))
-            value = shifted_value
+	if value <= 127: # fast path
+		result += bytearray(value)
+	else:
+		shifted_value = True # dummy initialized
+		while shifted_value:
+			shifted_value = value >> 7
+			result += bytearray((value & 0x7f) | (0x80 if shifted_value else 0))
+			value = shifted_value
 	return result
 #https://github.com/dividuum/fastmc/blob/master/fastmc/proto.py#L119
 def size_varint(value):
-    size = 1
-    while value & ~0x7f:
-        size += 1
-        value >>= 7
-    return size
+	size = 1
+	while value & ~0x7f:
+		size += 1
+		value >>= 7
+	return size
 
 def writeString(toConvert):
 	strByte = bytearray(toConvert, "utf-8")
