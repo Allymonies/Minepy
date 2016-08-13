@@ -1,5 +1,6 @@
 import socket
 import struct
+from threading import Thread
 import time
 
 def writeString(toConvert):
@@ -14,6 +15,8 @@ class Connect:
 		self.s = socket.socket()
 		self.s.connect((ip,port))
 		self.handshake()
+		self.thread = Thread(target = self.receive)
+		self.thread.start()
 	def sendPacket(self, id, data = None):
 		if str(type(id)) == "<class 'int'>":
 			id = struct.pack("<i", id)
@@ -36,6 +39,14 @@ class Connect:
 		packet += struct.pack("<i", 1)
 		self.sendPacket(packet_id, packet)
 		self.sendPacket(struct.pack("<i", 0x00))
-		response = self.s.recv(16384, 0x40)
+		response = self.s.recv(1024)
 		print(str(response))
 		print(str(response,"utf-8"))
+	def receive(self):
+		while True:
+			try:
+				response = self.s.recv(10240, 0x40)
+				print(str(response))
+				print(str(response,"utf-8"))
+			except BlockingIOError:
+				pass
