@@ -25,20 +25,20 @@ class Connect:
 				self.s.send(bytes((len(data)+len(id),)))
 			else:
 				self.s.send(bytes((1,)))
-			self.s.send(id)
+			self.s.send(bytearray(id))
 			if data != None:
 				self.s.send(data)
 		else:
 			raise TypeError
 	def handshake(self):
 		packet = bytearray()
-		packet_id = struct.pack("<i", 0x00)
+		packet_id = b'\x00'
 		packet += struct.pack("<i", 210)
 		packet += writeString(self.ip)
 		packet += struct.pack("!H", self.port)
 		packet += struct.pack("<i", 1)
 		self.sendPacket(packet_id, packet)
-		self.sendPacket(struct.pack("<i", 0x00))
+		self.sendPacket(b'\x00')
 	def receive(self):
 		while True:
 			try:
