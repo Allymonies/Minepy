@@ -21,9 +21,9 @@ def authenticate(username, password, clientToken = None, requestUser = True, deb
 		return resp
 	elif not "error" in resp:
 		if not "user" in resp:
-			return [resp["accessToken"], resp["clientToken"]]
+			return [resp["accessToken"], resp["clientToken"], resp["selectedProfile"]]
 		else:
-			return [resp["accessToken"], resp["clientToken"], resp["user"]]
+			return [resp["accessToken"], resp["clientToken"], resp["selectedProfile"], resp["user"]]
 	else:
 		return resp
 
