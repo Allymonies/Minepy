@@ -39,13 +39,10 @@ class Connect:
 		packet += struct.pack("<i", 1)
 		self.sendPacket(packet_id, packet)
 		self.sendPacket(struct.pack("<i", 0x00))
-		response = self.s.recv(1024)
-		print(str(response))
-		print(str(response,"utf-8"))
 	def receive(self):
 		while True:
 			try:
-				response = self.s.recv(10240, 0x40)
+				response = self.s.recv(4096)
 				print(str(response))
 				print(str(response,"utf-8"))
 			except BlockingIOError:
