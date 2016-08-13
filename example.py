@@ -10,7 +10,7 @@ for auth in auths:
 	print(str(c) + ": " + auth[3]["name"] + " (" + auth[3]["id"][0:8] + ")")
 	c += 1
 print(str(c) + ": Sign in on new account")
-choice = int(input))
+choice = int(input())
 if choice == len(auths):
 	print("Username:")
 	username = input()
