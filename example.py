@@ -1,3 +1,4 @@
+import getpass
 import json
 import sys
 import yggdrasil
@@ -15,7 +16,7 @@ if choice == len(auths):
 	print("Username:")
 	username = input()
 	print("Password:")
-	password = input("*")
+	password = getpass.getpass()
 	newAuth = yggdrasil.authenticate(username, password)
 	if "error" in newAuth:
 		print("Error has occurred.")
