@@ -21,7 +21,7 @@ class Connect:
 			if data != None:
 				self.s.send(bytes((len(data)+len(id),)))
 			else:
-				self.s.send(bytes((1,))
+				self.s.send(bytes((1,)))
 			self.s.send(id)
 			if data != None:
 				self.s.send(data)
