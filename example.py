@@ -1,14 +1,15 @@
+import ast
 import getpass
 import json
 import sys
 import yggdrasil
 
 with open("auths.json") as f:
-	auths = json.loads(f.read())
+	auths = ast.literal_eval(f.read())
 
 c = 0
 for auth in auths:
-	print(str(c) + ": " + auth[3]["name"] + " (" + auth[3]["id"][0:8] + ")")
+	print(str(c) + ": " + auth[2]["name"] + " (" + auth[2]["id"][0:8] + ")")
 	c += 1
 print(str(c) + ": Sign in on new account")
 choice = int(input())
@@ -23,8 +24,8 @@ if choice == len(auths):
 		print("Please make sure your login details are valid.")
 		sys.exit()
 	else:
-		print("Logged in as " + newAuth[3]["name"])
-		print("UUID is " + newAuth[3]["id"])
+		print("Logged in as " + newAuth[2]["name"])
+		print("UUID is " + newAuth[2]["id"])
 		print("Adding auth to auths.json...")
 		auths.append(newAuth)
 		with open("auths.json","w") as f:
@@ -33,7 +34,7 @@ if choice == len(auths):
 		auth = newAuth
 elif choice >= 0 and choice < len(auths):
 	auth = auths[choice]
-	print("Using " + auths[choice]["name"])
+	print("Using " + auths[choice][2]["name"])
 elif choice > len(auths) or choice < 0:
 	print("Choice must be between 0 and " + str(len(auths)))
 	sys.exit()
