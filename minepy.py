@@ -43,7 +43,8 @@ class Connect:
 		while True:
 			try:
 				response = self.s.recv(4096)
-				print(str(response))
-				print(str(response,"utf-8"))
+				if response:
+					print(str(response))
+					print(str(response,"utf-8"))
 			except BlockingIOError:
 				pass
