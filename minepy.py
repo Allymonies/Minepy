@@ -50,6 +50,31 @@ def size_varint(value):
 		value >>= 7
 	return size
 
+def decode_varint(value): #This has the same liscence as minepy
+	msb = "1"
+	num = 0
+	varint = []
+	for rbyte in value:
+		num += 1
+		msb = '{0:08b}'.format(rbyte)[0:1]
+		if msb == "0":
+			value_bytes = response[0:num]
+			for value_byte in value_bytes:
+				msb = '{0:08b}'.format(value_byte)[0:1]
+				if msb == "1":
+					varint.append('{0:08b}'.format(rbyte)[1:])
+				else:
+					varint.append('{0:08b}'.format(rbyte))
+			break
+	varint = varint[::-1]
+	varint = ''.join(varint)
+	varint = int(varint, base = 2)
+	return [varint,num]
+
+def decode_string(value):
+	value_length, num_bytes = decode_varint(value)
+	return [value[num_bytes:], value_length]
+
 def writeString(toConvert):
 	strByte = bytearray(toConvert, "utf-8")
 	result = varint(len(strByte)) + strByte
@@ -100,30 +125,14 @@ class Connect:
 			try:
 				response = self.s.recv(4096)
 				if response:
-					msb = "1"
-					num = 0
-					response_length = []
-					for rbyte in response:
-						num += 1
-						msb = '{0:08b}'.format(rbyte)[0:1]
-						if msb == "0":
-							response_length_bytes = response[0:num]
-							for response_length_byte in response_length_bytes:
-								msb = '{0:08b}'.format(response_length_byte)[0:1]
-								if msb == "1":
-									response_length.append('{0:08b}'.format(rbyte)[1:])
-								else:
-									response_length.append('{0:08b}'.format(rbyte))
-							break
-					response_length = response_length[::-1]
-					response_length = ''.join(response_length)
-					response_length = int(response_length, base = 2)
+					response_length, num = decode_varint(response)
 					response_id = response[num:num+1]
-					data = response[num+1:]
-					if self.debug:
-						response_id_debug = str(response_id)
-						response_id_debug = "0x" + str(response_id_debug)[4:len(str(response_id_debug))-1].upper()
-						print("(" + str(response_length) + " vs. " + str(len(data)) + ") Packet ID " + response_id_debug)
-						print("Data: " + str(data,"utf-8"))
+					if response_id == 0x00: #If the server is responding to our status request
+						data, data_length = decode_string(response[num+1:])
+						if self.debug:
+							response_id_debug = str(response_id)
+							response_id_debug = "0x" + str(response_id_debug)[4:len(str(response_id_debug))-1].upper()
+							print("(" + str(response_length) + " vs. " + str(len(data)) + ") Packet ID " + response_id_debug)
+							print("Data: " + str(data,"utf-8"))
 			except BlockingIOError:
 				pass
