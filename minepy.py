@@ -131,7 +131,7 @@ class Connect:
 		self.status_mode = False
 		self.disconect()
 		return self.status_response
-	def connect():
+	def connect(self):
 		self.s.connect((self.ip,self.port))
 		self.thread = Thread(target = self.receive)
 		self.thread.start()
