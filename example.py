@@ -64,6 +64,6 @@ if ip.find(":") == -1:
 else:
 	host = ip[0:ip.find(":")]
 	port = ip[ip.find(":")+1:]
-connection = minepy.Connect(host, port, handler)
+connection = minepy.Connect(host, port, handler=handler)
 status = json.loads(connection.status())
 print(host + " on version " + status["version"]["name"] + " with " + str(status["players"]["online"]) + "/" + str(status["players"]["max"]) + " players online.")
