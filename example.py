@@ -1,8 +1,12 @@
 import ast
 import getpass
 import json
+import minepy
 import sys
 import yggdrasil
+
+def handler(self, packet_id, data)
+	pass
 
 with open("auths.json") as f:
 	auths = ast.literal_eval(f.read())
@@ -52,4 +56,14 @@ else:
 	else:
 		print("Failed to refresh, exiting...")
 		sys.exit()
-
+print("Server ip?")
+ip = input()
+if ip.find(":") == -1:
+	host = ip
+	port = 25565
+else:
+	host = ip[0:ip.find(":")]
+	port = ip[ip.find(":")+1:]
+connection = minepy.Connect(host, port, handler)
+status = json.loads(connection.status())
+print(host + " on version " + status["version"]["name"] + " with " + str(status["players"]["online"]) + "/" + str(status["players"]["max"]) + " players online.")
