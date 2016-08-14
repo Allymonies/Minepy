@@ -100,7 +100,30 @@ class Connect:
 			try:
 				response = self.s.recv(4096)
 				if response:
-					print(str(response))
-					print(str(response,"utf-8"))
+					msb = "1"
+					num = 0
+					response_length = []
+					for rbyte in response:
+						num += 1
+						msb = '{0:08b}'.format(rbyte)[0:1]
+						if msb == "0":
+							response_length_bytes = response[0:num]
+							for response_length_byte in response_length_bytes:
+								msb = '{0:08b}'.format(response_length_byte)[0:1]
+								if msb == "1":
+									response_length.append('{0:08b}'.format(rbyte)[1:])
+								else:
+									response_length.append('{0:08b}'.format(rbyte))
+							break
+					response_length = response_length[::-1]
+					response_length = ''.join(response_length)
+					response_length = int(response_length, base = 2)
+					response_id = response[num:num+1]
+					data = response[num+1:len(data)]
+					if self.debug:
+						response_id_debug = hex(response)
+						response_id_debug = response_id[0:2] + response_id[2:len(response_id)].upper()
+						print("(" + str(response_length) + " vs. " + str(len(data)) + ") Packet ID " + response_id_debug)
+						print("Data: " + str(data,"utf-8"))
 			except BlockingIOError:
 				pass
