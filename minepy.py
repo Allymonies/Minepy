@@ -81,6 +81,9 @@ def writeString(toConvert):
 	result = varint(len(strByte)) + strByte
 	return result
 
+def default_handler(self, packet_id, data):
+		pass
+
 class Connect:
 	def __init__(self, ip, port, debug = False, handler = None):
 		self.ip = ip
@@ -90,7 +93,7 @@ class Connect:
 		if handler != None:
 			self.handler = handler
 		else:
-			self.handler = self.default_handler
+			self.handler = default_handler
 	def sendPacket(self, id, data = None):
 		if str(type(id)) == "<class 'int'>":
 			id = bytearray((id,))
@@ -150,8 +153,6 @@ class Connect:
 					if self.status_mode == True:
 						if response_id == 0x00:
 							self.status_response = data
-					self.handler(response_id, data)
+					self.handler(self, response_id, data)
 			except BlockingIOError:
 				pass
-	def default_handler(self, packet_id, data):
-		pass
