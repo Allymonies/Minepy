@@ -71,6 +71,11 @@ def decode_varint(value):
 	value_length = int(value_length, base = 2)
 	return [value_length, num]
 
+def decode_string(value):
+	value_length, num = decode_varint(value)
+	value = value[num:]
+	return [value, value_length]
+
 def writeString(toConvert):
 	strByte = bytearray(toConvert, "utf-8")
 	result = varint(len(strByte)) + strByte
@@ -123,7 +128,7 @@ class Connect:
 				if response:
 					response_length, num = decode_varint(response)
 					response_id = response[num:num+1]
-					data = response[num+1:]
+					data, data_length = decode_string(response[num+1:])
 					if self.debug:
 						response_id_debug = str(response_id)
 						response_id_debug = "0x" + str(response_id_debug)[4:len(str(response_id_debug))-1].upper()
