@@ -50,6 +50,27 @@ def size_varint(value):
 		value >>= 7
 	return size
 
+def decode_varint(value):
+	msb = "1"
+	num = 0
+	value_length = []
+	for rbyte in value:
+		num += 1
+		msb = '{0:08b}'.format(rbyte)[0:1]
+		if msb == "0":
+			value_length_bytes = value[0:num]
+			for value_length_byte in value_length_bytes:
+				msb = '{0:08b}'.format(value_length_byte)[0:1]
+				if msb == "1":
+					value_length.append('{0:08b}'.format(rbyte)[1:])
+				else:
+					value_length.append('{0:08b}'.format(rbyte))
+			break
+	value_length = value_length[::-1]
+	value_length = ''.join(value_length)
+	value_length = int(value_length, base = 2)
+	return [value_length, num]
+
 def writeString(toConvert):
 	strByte = bytearray(toConvert, "utf-8")
 	result = varint(len(strByte)) + strByte
@@ -100,24 +121,7 @@ class Connect:
 			try:
 				response = self.s.recv(4096)
 				if response:
-					msb = "1"
-					num = 0
-					response_length = []
-					for rbyte in response:
-						num += 1
-						msb = '{0:08b}'.format(rbyte)[0:1]
-						if msb == "0":
-							response_length_bytes = response[0:num]
-							for response_length_byte in response_length_bytes:
-								msb = '{0:08b}'.format(response_length_byte)[0:1]
-								if msb == "1":
-									response_length.append('{0:08b}'.format(rbyte)[1:])
-								else:
-									response_length.append('{0:08b}'.format(rbyte))
-							break
-					response_length = response_length[::-1]
-					response_length = ''.join(response_length)
-					response_length = int(response_length, base = 2)
+					response_length, num = decode_varint(response)
 					response_id = response[num:num+1]
 					data = response[num+1:]
 					if self.debug:
