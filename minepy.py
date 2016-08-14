@@ -119,10 +119,9 @@ class Connect:
 					response_length = ''.join(response_length)
 					response_length = int(response_length, base = 2)
 					response_id = response[num:num+1]
-					data = response[num+1:len(data)]
+					data = response[num+1:]
 					if self.debug:
-						response_id_debug = hex(response)
-						response_id_debug = response_id[0:2] + response_id[2:len(response_id)].upper()
+						response_id_debug = "0x" + str(a)[4:len(str(a))-1].upper()
 						print("(" + str(response_length) + " vs. " + str(len(data)) + ") Packet ID " + response_id_debug)
 						print("Data: " + str(data,"utf-8"))
 			except BlockingIOError:
