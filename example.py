@@ -5,7 +5,7 @@ import minepy
 import sys
 import yggdrasil
 
-def handler(self, packet_id, data)
+def handler(self, packet_id, data):
 	pass
 
 with open("auths.json") as f:
