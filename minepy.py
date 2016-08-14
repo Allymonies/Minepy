@@ -34,12 +34,12 @@ import time
 def varint(value):
 	result = bytearray()
 	if value <= 127: # fast path
-		result += bytearray(value)
+		result += bytearray((value,))
 	else:
 		shifted_value = True # dummy initialized
 		while shifted_value:
 			shifted_value = value >> 7
-			result += bytearray((value & 0x7f) | (0x80 if shifted_value else 0))
+			result += bytearray(((value & 0x7f) | (0x80 if shifted_value else 0),))
 			value = shifted_value
 	return result
 #https://github.com/dividuum/fastmc/blob/master/fastmc/proto.py#L119
