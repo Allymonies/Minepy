@@ -70,18 +70,19 @@ class Connect:
 			id = bytearray((id,))
 		if (data != None and str(type(data)) == "<class 'bytearray'>") or (data == None):
 			if data != None:
-				if debug:
+				if self.debug:
 					print("Sent: " + ''.join(r'\x' + hex(letter)[2:] for letter in varint(len(data) + len(id))))
 				self.s.send(bytearray((len(data)+len(id),)))
 			else:
-				if debug:
+				if self.debug:
 					print("Sent: " + ''.join(r'\x' + hex(letter)[2:] for letter in bytes((1,))))
 				self.s.send(bytes((1,)))
-			if debug:
+			if self.debug:
 				print("Sent: " + ''.join(r'\x' + hex(letter)[2:] for letter in bytearray(id)))
 			self.s.send(bytearray(id))
 			if data != None:
-				print("Sent: " + ''.join(r'\x' + hex(letter)[2:] for letter in data))
+				if self.debug:
+					print("Sent: " + ''.join(r'\x' + hex(letter)[2:] for letter in data))
 				self.s.send(data)
 		else:
 			raise TypeError
