@@ -58,7 +58,7 @@ def decode_varint(value): #This has the same liscence as minepy
 		num += 1
 		msb = '{0:08b}'.format(rbyte)[0:1]
 		if msb == "0":
-			value_bytes = response[0:num]
+			value_bytes = value[0:num]
 			for value_byte in value_bytes:
 				msb = '{0:08b}'.format(value_byte)[0:1]
 				if msb == "1":
