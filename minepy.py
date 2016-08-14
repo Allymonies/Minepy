@@ -85,7 +85,7 @@ def default_handler(self, packet_id, data):
 		pass
 
 class Connect:
-	def __init__(self, ip, port, debug = False, handler = None):
+	def __init__(self, ip, port, handler = None, debug = False, ):
 		self.ip = ip
 		self.port = port
 		self.debug = debug
@@ -140,7 +140,7 @@ class Connect:
 		self.thread_id += 1
 	def receive(self):
 		priv_id = self.thread_id
-		while self.thread_id = priv_id:
+		while self.thread_id == priv_id:
 			try:
 				response = self.s.recv(4096)
 				if response:
