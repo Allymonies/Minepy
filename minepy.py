@@ -82,15 +82,15 @@ def writeString(toConvert):
 	return result
 
 class Connect:
-	def __init__(self, ip, port, debug = False):
+	def __init__(self, ip, port, debug = False, handler = None):
 		self.ip = ip
 		self.port = port
 		self.debug = debug
 		self.s = socket.socket()
-		self.s.connect((ip,port))
-		self.handshake()
-		self.thread = Thread(target = self.receive)
-		self.thread.start()
+		if handler != None:
+			self.handler = handler
+		else:
+			self.handler = self.default_handler
 	def sendPacket(self, id, data = None):
 		if str(type(id)) == "<class 'int'>":
 			id = bytearray((id,))
@@ -112,7 +112,8 @@ class Connect:
 				self.s.send(data)
 		else:
 			raise TypeError
-	def handshake(self):
+	def status(self):
+		self.connect()
 		packet = bytearray()
 		packet_id = b'\x00'
 		packet += varint(210)
@@ -121,6 +122,18 @@ class Connect:
 		packet += varint(1)
 		self.sendPacket(packet_id, packet)
 		self.sendPacket(b'\x00')
+		self.status_mode = True
+		self.status_response = ""
+		time.sleep(1)
+		self.status_mode = False
+		self.disconect()
+		return self.status_response
+	def connect():
+		self.s.connect((self.ip,self.port))
+		self.thread = Thread(target = self.receive)
+		self.thread.start()
+	def disconect(self):
+		self.thread.stop()
 	def receive(self):
 		while True:
 			try:
@@ -133,6 +146,12 @@ class Connect:
 						response_id_debug = str(response_id)
 						response_id_debug = "0x" + str(response_id_debug)[4:len(str(response_id_debug))-1].upper()
 						print("(" + str(response_length) + " vs. " + str(1 + len(response[num:])) + ") Packet ID " + response_id_debug)
-						print("Data: " + str(data,"utf-8"))
+						print("Data: " + str(data))
+					if self.status_mode == True:
+						if response_id == 0x00:
+							self.status_response = data
+					self.handler(response_id, data)
 			except BlockingIOError:
 				pass
+	def default_handler(self, packet_id, data):
+		pass
