@@ -90,6 +90,7 @@ class Connect:
 		self.port = port
 		self.debug = debug
 		self.s = socket.socket()
+		self.thread_id = 0
 		if handler != None:
 			self.handler = handler
 		else:
@@ -136,9 +137,10 @@ class Connect:
 		self.thread = Thread(target = self.receive)
 		self.thread.start()
 	def disconect(self):
-		self.thread.stop()
+		self.thread_id += 1
 	def receive(self):
-		while True:
+		priv_id = self.thread_id
+		while self.thread_id = priv_id:
 			try:
 				response = self.s.recv(4096)
 				if response:
@@ -156,3 +158,4 @@ class Connect:
 					self.handler(self, response_id, data)
 			except BlockingIOError:
 				pass
+		self.s.disconect()
